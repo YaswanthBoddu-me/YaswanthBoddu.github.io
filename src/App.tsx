@@ -269,19 +269,20 @@ export default function Pokedex() {
         </CardHeader>
         <CardContent>
           {selectedPokemon && (
-  <Card className="w-full max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
-    <div className="flex items-center justify-center space-x-4 mb-6">
-      <img
-        src={selectedPokemon.image}
-        alt={selectedPokemon.name}
-        className="w-24 h-24 object-contain"
-      />
-      <h2 className="text-2xl font-bold capitalize text-gray-800">
-        {selectedPokemon.name}
-      </h2>
-    </div>
+  <div>
+    <Card className="w-full max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
+      <div className="flex items-center justify-center space-x-4 mb-6">
+        <img
+          src={selectedPokemon.image}
+          alt={selectedPokemon.name}
+          className="w-24 h-24 object-contain"
+        />
+        <h2 className="text-2xl font-bold capitalize text-gray-800">
+          {selectedPokemon.name}
+        </h2>
+      </div>
 
-    <Tabs defaultValue="about" className="w-full">
+      <Tabs defaultValue="about" className="w-full">
       <TabsList className="grid w-full grid-cols-2 mb-6">
         <TabsTrigger value="about" className="data-[state=active]:bg-gray-100 data-[state=active]:text-gray-900">
           About
@@ -376,8 +377,8 @@ export default function Pokedex() {
     >
       Back to List
     </Button>
-  </Card>
-  </div>
+      </Card>
+    </div>
   ) : (
             <>
               {isLoading || isFiltering ? (
