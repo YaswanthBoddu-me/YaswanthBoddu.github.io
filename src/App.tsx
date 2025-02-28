@@ -265,7 +265,7 @@ export default function Pokedex() {
           </div>
         </CardHeader>
         <CardContent>
-          {selectedPokemon && (
+          {selectedPokemon ? (
   <div className="space-y-4">
     <div className="flex items-center space-x-4">
       <img
@@ -351,8 +351,7 @@ export default function Pokedex() {
       Back to List
     </Button>
   </div>
-      )}
-) : (
+  ) : (
             <>
               {isLoading || isFiltering ? (
                 <div className="flex justify-center items-center h-32">
