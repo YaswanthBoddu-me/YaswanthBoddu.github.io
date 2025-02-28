@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from '@/components/ui/barchart';
 
 // Rest of your code...
 
@@ -125,7 +127,7 @@ export default function Pokedex() {
     if (!speciesResponse.ok) {
       throw new Error('Pokémon species not found');
     }
-    const speciesData = await response.json();
+    const speciesData = await speciesResponse.json(); // Corrected to use speciesResponse
 
     // Fetch flavor text (keeping existing logic)
     const flavorText = speciesData.flavor_text_entries
@@ -158,14 +160,15 @@ export default function Pokedex() {
       stats: data.stats.map((stat: any) => ({ name: stat.stat.name, value: stat.base_stat })),
       evolutionChain,
       flavorText,
-      region, // Add region
-      isLegendary, // Add legendary status
-      isMythical, // Add mythical status
-      isBaby // Add baby status
+      region,
+      isLegendary,
+      isMythical,
+      isBaby
     };
     setSelectedPokemon(pokemonDetails);
   } catch (error) {
     setError('Failed to load Pokémon details');
+    console.error('Error fetching Pokémon details:', error); // Add console.log for debugging
   } finally {
     setIsLoading(false);
   }
@@ -265,68 +268,91 @@ export default function Pokedex() {
           </div>
         </CardHeader>
         <CardContent>
-          {selectedPokemon ? (
-  <div className="space-y-4">
-    <div className="flex items-center space-x-4">
+          {selectedPokemon && (
+  <Card className="w-full max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
+    <div className="flex items-center justify-center space-x-4 mb-6">
       <img
         src={selectedPokemon.image}
         alt={selectedPokemon.name}
-        className="w-24 h-24"
+        className="w-24 h-24 object-contain"
       />
-      <h2 className="text-2xl font-bold capitalize">
+      <h2 className="text-2xl font-bold capitalize text-gray-800">
         {selectedPokemon.name}
       </h2>
     </div>
-    <div className="grid grid-cols-2 gap-4">
-      <div>
-        <p className="font-bold">Type</p>
-        <p>{selectedPokemon.type}</p>
-      </div>
-      <div>
-        <p className="font-bold">Height</p>
-        <p>{selectedPokemon.height / 10} m</p>
-      </div>
-      <div>
-        <p className="font-bold">Weight</p>
-        <p>{selectedPokemon.weight / 10} kg</p>
-      </div>
-      <div>
-        <p className="font-bold">Abilities</p>
-        <p>{selectedPokemon.abilities.join(', ')}</p>
-      </div>
-      {selectedPokemon.region && (
-        <div>
-          <p className="font-bold">Region</p>
-          <p className="capitalize">{selectedPokemon.region}</p>
-        </div>
-      )}
-    </div>
-    {selectedPokemon.flavorText && (
-      <div>
-        <p className="font-bold">Description</p>
-        <p className="text-gray-700">{selectedPokemon.flavorText}</p>
-      </div>
-    )}
-    <div>
-      <p className="font-bold">Stats</p>
-      <div className="grid grid-cols-2 gap-2">
-        {selectedPokemon.stats.map((stat) => (
-          <div key={stat.name} className="flex justify-between">
-            <span className="capitalize">{stat.name}</span>
-            <span>{stat.value}</span>
+
+    <Tabs defaultValue="about" className="w-full">
+      <TabsList className="grid w-full grid-cols-2 mb-6">
+        <TabsTrigger value="about" className="data-[state=active]:bg-gray-100 data-[state=active]:text-gray-900">
+          About
+        </TabsTrigger>
+        <TabsTrigger value="stats" className="data-[state=active]:bg-gray-100 data-[state=active]:text-gray-900">
+          Stats
+        </TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="about">
+        <div className="grid grid-cols-2 gap-6 mb-6">
+          <div>
+            <p className="font-bold text-gray-700 mb-1">Type</p>
+            <p className="text-gray-600">{selectedPokemon.type}</p>
           </div>
-        ))}
-      </div>
-    </div>
-    <div>
-      <p className="font-bold">Special Status</p>
-      {selectedPokemon.isLegendary && <p>Legendary Pokémon</p>}
-      {selectedPokemon.isMythical && <p>Mythical Pokémon</p>}
-      {selectedPokemon.isBaby && <p>Baby Pokémon</p>}
-      {!selectedPokemon.isLegendary && !selectedPokemon.isMythical && !selectedPokemon.isBaby && <p>Regular Pokémon</p>}
-    </div>
-    <div>
-      <p className="font-bold">Evolution Chain</p>
+          <div>
+            <p className="font-bold text-gray-700 mb-1">Height</p>
+            <p className="text-gray-600">{selectedPokemon.height / 10} m</p>
+          </div>
+          <div>
+            <p className="font-bold text-gray-700 mb-1">Weight</p>
+            <p className="text-gray-600">{selectedPokemon.weight / 10} kg</p>
+          </div>
+          <div>
+            <p className="font-bold text-gray-700 mb-1">Abilities</p>
+            <p className="text-gray-600">{selectedPokemon.abilities.join(', ')}</p>
+          </div>
+          {selectedPokemon.region && (
+            <div>
+              <p className="font-bold text-gray-700 mb-1">Region</p>
+              <p className="text-gray-600 capitalize">{selectedPokemon.region}</p>
+            </div>
+          )}
+        </div>
+        {selectedPokemon.flavorText && (
+          <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <p className="font-bold text-gray-700 mb-1">Description</p>
+            <p className="text-gray-600">{selectedPokemon.flavorText}</p>
+          </div>
+        )}
+        <div className="mb-6">
+          <p className="font-bold text-gray-700 mb-2">Special Status</p>
+          <div className="space-y-2">
+            {selectedPokemon.isLegendary && <p className="text-gray-600">Legendary Pokémon</p>}
+            {selectedPokemon.isMythical && <p className="text-gray-600">Mythical Pokémon</p>}
+            {selectedPokemon.isBaby && <p className="text-gray-600">Baby Pokémon</p>}
+            {!selectedPokemon.isLegendary && !selectedPokemon.isMythical && !selectedPokemon.isBaby && (
+              <p className="text-gray-600">Regular Pokémon</p>
+            )}
+          </div>
+        </div>
+      </TabsContent>
+
+      <TabsContent value="stats">
+        <div className="h-[400px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={selectedPokemon.stats}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" type="category" />
+              <YAxis type="number" />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="value" fill="#8884d8" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </TabsContent>
+    </Tabs>
+
+    <div className="mt-6">
+      <p className="font-bold text-gray-700 mb-2">Evolution Chain</p>
       <div className="flex space-x-4">
         {selectedPokemon.evolutionChain.map((evolution) => (
           <div
@@ -337,20 +363,21 @@ export default function Pokedex() {
             <img
               src={evolution.image}
               alt={evolution.name}
-              className="w-16 h-16"
+              className="w-16 h-16 object-contain rounded-full"
             />
-            <p className="capitalize">{evolution.name}</p>
+            <p className="capitalize text-gray-600 mt-2">{evolution.name}</p>
           </div>
         ))}
       </div>
     </div>
     <Button
       onClick={() => setSelectedPokemon(null)}
-      className="w-full"
+      className="w-full bg-black text-white hover:bg-gray-800 py-3 rounded-md transition-colors mt-6"
     >
       Back to List
     </Button>
-  </div>
+  </Card>
+
   ) : (
             <>
               {isLoading || isFiltering ? (
