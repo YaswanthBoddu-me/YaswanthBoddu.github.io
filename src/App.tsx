@@ -19,6 +19,10 @@ type Pokemon = {
   stats: { name: string; value: number }[];
   evolutionChain: { name: string; image: string }[];
   flavorText?: string; // Optional property for flavor text
+  region?: string; // Optional property for the region
+  isLegendary: boolean; // Property for legendary status
+  isMythical: boolean; // Property for mythical status
+  isBaby: boolean; // Property for baby status
 };
 
 const mockPokemonData: Pokemon[] = [
@@ -121,10 +125,26 @@ export default function Pokedex() {
     if (!speciesResponse.ok) {
       throw new Error('Pokémon species not found');
     }
-    const speciesData = await speciesResponse.json();
+    const speciesData = await response.json();
+
+    // Fetch flavor text (keeping existing logic)
     const flavorText = speciesData.flavor_text_entries
-      .find((entry: any) => entry.language.name === 'en') // Find English flavor text
-      ?.flavor_text.replace(/\n/g, ' ').replace(/\f/g, ' '); // Clean up newlines and form feeds
+      .find((entry: any) => entry.language.name === 'en')
+      ?.flavor_text.replace(/\n/g, ' ').replace(/\f/g, ' ');
+
+    // Determine region using generation data
+    const generationId = speciesData.generation.url.split('/').slice(-2, -1)[0];
+    const generationResponse = await fetch(`https://pokeapi.co/api/v2/generation/${generationId}/`);
+    if (!generationResponse.ok) {
+      throw new Error('Generation data not found');
+    }
+    const generationData = await generationResponse.json();
+    const region = generationData.main_region.name;
+
+    // Determine legendary, mythical, and baby status
+    const isLegendary = speciesData.is_legendary || false;
+    const isMythical = speciesData.is_mythical || false;
+    const isBaby = speciesData.is_baby || false;
 
     const evolutionChain = await fetchEvolutionChain(speciesUrl);
     const pokemonDetails = {
@@ -137,7 +157,11 @@ export default function Pokedex() {
       abilities: data.abilities.map((ability: any) => ability.ability.name),
       stats: data.stats.map((stat: any) => ({ name: stat.stat.name, value: stat.base_stat })),
       evolutionChain,
-      flavorText // Add the flavor text to the Pokémon object
+      flavorText,
+      region, // Add region
+      isLegendary, // Add legendary status
+      isMythical, // Add mythical status
+      isBaby // Add baby status
     };
     setSelectedPokemon(pokemonDetails);
   } catch (error) {
@@ -241,7 +265,7 @@ export default function Pokedex() {
           </div>
         </CardHeader>
         <CardContent>
-          {selectedPokemon ? (
+          {selectedPokemon && (
   <div className="space-y-4">
     <div className="flex items-center space-x-4">
       <img
@@ -270,6 +294,12 @@ export default function Pokedex() {
         <p className="font-bold">Abilities</p>
         <p>{selectedPokemon.abilities.join(', ')}</p>
       </div>
+      {selectedPokemon.region && (
+        <div>
+          <p className="font-bold">Region</p>
+          <p className="capitalize">{selectedPokemon.region}</p>
+        </div>
+      )}
     </div>
     {selectedPokemon.flavorText && (
       <div>
@@ -282,11 +312,18 @@ export default function Pokedex() {
       <div className="grid grid-cols-2 gap-2">
         {selectedPokemon.stats.map((stat) => (
           <div key={stat.name} className="flex justify-between">
-            <span className="font-bold">{stat.name}</span>
+            <span className="capitalize">{stat.name}</span>
             <span>{stat.value}</span>
           </div>
         ))}
       </div>
+    </div>
+    <div>
+      <p className="font-bold">Special Status</p>
+      {selectedPokemon.isLegendary && <p>Legendary Pokémon</p>}
+      {selectedPokemon.isMythical && <p>Mythical Pokémon</p>}
+      {selectedPokemon.isBaby && <p>Baby Pokémon</p>}
+      {!selectedPokemon.isLegendary && !selectedPokemon.isMythical && !selectedPokemon.isBaby && <p>Regular Pokémon</p>}
     </div>
     <div>
       <p className="font-bold">Evolution Chain</p>
@@ -314,6 +351,7 @@ export default function Pokedex() {
       Back to List
     </Button>
   </div>
+      )}
 ) : (
             <>
               {isLoading || isFiltering ? (
