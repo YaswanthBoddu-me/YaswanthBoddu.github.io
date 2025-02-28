@@ -255,41 +255,41 @@ export default function Pokedex() {
     </div>
     <div className="grid grid-cols-2 gap-4">
       <div>
-        <p className="font-semibold">Type</p>
+        <p className="font-bold">Type</p>
         <p>{selectedPokemon.type}</p>
       </div>
       <div>
-        <p className="font-semibold">Height</p>
+        <p className="font-bold">Height</p>
         <p>{selectedPokemon.height / 10} m</p>
       </div>
       <div>
-        <p className="font-semibold">Weight</p>
+        <p className="font-bold">Weight</p>
         <p>{selectedPokemon.weight / 10} kg</p>
       </div>
       <div>
-        <p className="font-semibold">Abilities</p>
+        <p className="font-bold">Abilities</p>
         <p>{selectedPokemon.abilities.join(', ')}</p>
       </div>
     </div>
     {selectedPokemon.flavorText && (
       <div>
-        <p className="font-semibold">Description</p>
+        <p className="font-bold">Description</p>
         <p className="text-gray-700">{selectedPokemon.flavorText}</p>
       </div>
     )}
     <div>
-      <p className="font-semibold">Stats</p>
+      <p className="font-bold">Stats</p>
       <div className="grid grid-cols-2 gap-2">
         {selectedPokemon.stats.map((stat) => (
           <div key={stat.name} className="flex justify-between">
-            <span className="capitalize">{stat.name}</span>
+            <span className="font-bold">{stat.name}</span>
             <span>{stat.value}</span>
           </div>
         ))}
       </div>
     </div>
     <div>
-      <p className="font-semibold">Evolution Chain</p>
+      <p className="font-bold">Evolution Chain</p>
       <div className="flex space-x-4">
         {selectedPokemon.evolutionChain.map((evolution) => (
           <div
