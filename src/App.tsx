@@ -377,7 +377,6 @@ export default function Pokedex() {
       Back to List
     </Button>
   </Card>
-
   ) : (
             <>
               {isLoading || isFiltering ? (
