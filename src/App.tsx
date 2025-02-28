@@ -9,16 +9,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 // Rest of your code...
 
 type Pokemon = {
-  id: number
-  name: string
-  image: string
-  type: string
-  height: number
-  weight: number
-  abilities: string[]
-  stats: { name: string; value: number }[]
-  evolutionChain: { name: string; image: string }[]
-}
+  id: number;
+  name: string;
+  image: string;
+  type: string;
+  height: number;
+  weight: number;
+  abilities: string[];
+  stats: { name: string; value: number }[];
+  evolutionChain: { name: string; image: string }[];
+  flavorText?: string; // Optional property for flavor text
+};
 
 const mockPokemonData: Pokemon[] = [
   {
@@ -108,33 +109,43 @@ export default function Pokedex() {
   }
 
   const fetchPokemonDetails = async (pokemonName: string) => {
-    setIsLoading(true)
-    try {
-      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName.toLowerCase()}`)
-      if (!response.ok) {
-        throw new Error('Pokémon not found')
-      }
-      const data = await response.json()
-      const speciesUrl = `https://pokeapi.co/api/v2/pokemon-species/${data.id}/`
-      const evolutionChain = await fetchEvolutionChain(speciesUrl)
-      const pokemonDetails = {
-        id: data.id,
-        name: data.name,
-        image: data.sprites.front_default || 'https://via.placeholder.com/96',
-        type: data.types.map((type: any) => type.type.name).join('/'),
-        height: data.height,
-        weight: data.weight,
-        abilities: data.abilities.map((ability: any) => ability.ability.name),
-        stats: data.stats.map((stat: any) => ({ name: stat.stat.name, value: stat.base_stat })),
-        evolutionChain
-      }
-      setSelectedPokemon(pokemonDetails)
-    } catch (error) {
-      setError('Failed to load Pokémon details')
-    } finally {
-      setIsLoading(false)
+  setIsLoading(true);
+  try {
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName.toLowerCase()}`);
+    if (!response.ok) {
+      throw new Error('Pokémon not found');
     }
+    const data = await response.json();
+    const speciesUrl = `https://pokeapi.co/api/v2/pokemon-species/${data.id}/`;
+    const speciesResponse = await fetch(speciesUrl);
+    if (!speciesResponse.ok) {
+      throw new Error('Pokémon species not found');
+    }
+    const speciesData = await speciesResponse.json();
+    const flavorText = speciesData.flavor_text_entries
+      .find((entry: any) => entry.language.name === 'en') // Find English flavor text
+      ?.flavor_text.replace(/\n/g, ' ').replace(/\f/g, ' '); // Clean up newlines and form feeds
+
+    const evolutionChain = await fetchEvolutionChain(speciesUrl);
+    const pokemonDetails = {
+      id: data.id,
+      name: data.name,
+      image: data.sprites.front_default || 'https://via.placeholder.com/96',
+      type: data.types.map((type: any) => type.type.name).join('/'),
+      height: data.height,
+      weight: data.weight,
+      abilities: data.abilities.map((ability: any) => ability.ability.name),
+      stats: data.stats.map((stat: any) => ({ name: stat.stat.name, value: stat.base_stat })),
+      evolutionChain,
+      flavorText // Add the flavor text to the Pokémon object
+    };
+    setSelectedPokemon(pokemonDetails);
+  } catch (error) {
+    setError('Failed to load Pokémon details');
+  } finally {
+    setIsLoading(false);
   }
+};
 
   const fetchMorePokemon = async () => {
     setIsLoadingMore(true)
@@ -230,73 +241,80 @@ export default function Pokedex() {
           </div>
         </CardHeader>
         <CardContent>
-          {selectedPokemon ? (
-            <div className="space-y-4">
-              <div className="flex items-center space-x-4">
-                <img
-                  src={selectedPokemon.image}
-                  alt={selectedPokemon.name}
-                  className="w-24 h-24"
-                />
-                <h2 className="text-2xl font-bold capitalize">
-                  {selectedPokemon.name}
-                </h2>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="font-semibold">Type</p>
-                  <p>{selectedPokemon.type}</p>
-                </div>
-                <div>
-                  <p className="font-semibold">Height</p>
-                  <p>{selectedPokemon.height / 10} m</p>
-                </div>
-                <div>
-                  <p className="font-semibold">Weight</p>
-                  <p>{selectedPokemon.weight / 10} kg</p>
-                </div>
-                <div>
-                  <p className="font-semibold">Abilities</p>
-                  <p>{selectedPokemon.abilities.join(', ')}</p>
-                </div>
-              </div>
-              <div>
-                <p className="font-semibold">Stats</p>
-                <div className="grid grid-cols-2 gap-2">
-                  {selectedPokemon.stats.map((stat) => (
-                    <div key={stat.name} className="flex justify-between">
-                      <span className="capitalize">{stat.name}</span>
-                      <span>{stat.value}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <p className="font-semibold">Evolution Chain</p>
-                <div className="flex space-x-4">
-                  {selectedPokemon.evolutionChain.map((evolution) => (
-                    <div
-                      key={evolution.name}
-                      className="flex flex-col items-center cursor-pointer hover:opacity-75"
-                      onClick={() => handlePokemonClick(evolution.name)}
-                    >
-                      <img
-                        src={evolution.image}
-                        alt={evolution.name}
-                        className="w-16 h-16"
-                      />
-                      <p className="capitalize">{evolution.name}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <Button
-                onClick={() => setSelectedPokemon(null)}
-                className="w-full"
-              >
-                Back to List
-              </Button>
-            </div>
+          {selectedPokemon && (
+  <div className="space-y-4">
+    <div className="flex items-center space-x-4">
+      <img
+        src={selectedPokemon.image}
+        alt={selectedPokemon.name}
+        className="w-24 h-24"
+      />
+      <h2 className="text-2xl font-bold capitalize">
+        {selectedPokemon.name}
+      </h2>
+    </div>
+    <div className="grid grid-cols-2 gap-4">
+      <div>
+        <p className="font-semibold">Type</p>
+        <p>{selectedPokemon.type}</p>
+      </div>
+      <div>
+        <p className="font-semibold">Height</p>
+        <p>{selectedPokemon.height / 10} m</p>
+      </div>
+      <div>
+        <p className="font-semibold">Weight</p>
+        <p>{selectedPokemon.weight / 10} kg</p>
+      </div>
+      <div>
+        <p className="font-semibold">Abilities</p>
+        <p>{selectedPokemon.abilities.join(', ')}</p>
+      </div>
+    </div>
+    {selectedPokemon.flavorText && (
+      <div>
+        <p className="font-semibold">Description</p>
+        <p className="text-gray-700">{selectedPokemon.flavorText}</p>
+      </div>
+    )}
+    <div>
+      <p className="font-semibold">Stats</p>
+      <div className="grid grid-cols-2 gap-2">
+        {selectedPokemon.stats.map((stat) => (
+          <div key={stat.name} className="flex justify-between">
+            <span className="capitalize">{stat.name}</span>
+            <span>{stat.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+    <div>
+      <p className="font-semibold">Evolution Chain</p>
+      <div className="flex space-x-4">
+        {selectedPokemon.evolutionChain.map((evolution) => (
+          <div
+            key={evolution.name}
+            className="flex flex-col items-center cursor-pointer hover:opacity-75"
+            onClick={() => handlePokemonClick(evolution.name)}
+          >
+            <img
+              src={evolution.image}
+              alt={evolution.name}
+              className="w-16 h-16"
+            />
+            <p className="capitalize">{evolution.name}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+    <Button
+      onClick={() => setSelectedPokemon(null)}
+      className="w-full"
+    >
+      Back to List
+    </Button>
+  </div>
+)}
           ) : (
             <>
               {isLoading || isFiltering ? (
