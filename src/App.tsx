@@ -220,192 +220,194 @@ export default function Pokedex() {
     .slice(0, page * 10)
 
   return (
-    <div className="min-h-screen p-4 bg-gray-50">
-      <Card className="w-full max-w-4xl mx-auto">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold">Pokédex</CardTitle>
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="relative flex-1">
-              <Input
-                placeholder="Search Pokémon..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-              <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
-            </div>
-            <Button onClick={handleSearch} className="w-[100px]">
-              Search
-            </Button>
-            <Select value={selectedType} onValueChange={handleTypeFilter}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filter by type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="normal">Normal</SelectItem>
-                <SelectItem value="fire">Fire</SelectItem>
-                <SelectItem value="water">Water</SelectItem>
-                <SelectItem value="grass">Grass</SelectItem>
-                <SelectItem value="electric">Electric</SelectItem>
-                <SelectItem value="ice">Ice</SelectItem>
-                <SelectItem value="fighting">Fighting</SelectItem>
-                <SelectItem value="poison">Poison</SelectItem>
-                <SelectItem value="ground">Ground</SelectItem>
-                <SelectItem value="flying">Flying</SelectItem>
-                <SelectItem value="psychic">Psychic</SelectItem>
-                <SelectItem value="bug">Bug</SelectItem>
-                <SelectItem value="rock">Rock</SelectItem>
-                <SelectItem value="ghost">Ghost</SelectItem>
-                <SelectItem value="dragon">Dragon</SelectItem>
-                <SelectItem value="dark">Dark</SelectItem>
-                <SelectItem value="steel">Steel</SelectItem>
-                <SelectItem value="fairy">Fairy</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {selectedPokemon && (
-  <Card className="w-full max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
-    <div className="flex items-center justify-center space-x-4 mb-6">
-      <img
-        src={selectedPokemon.image}
-        alt={selectedPokemon.name}
-        className="w-24 h-24 object-contain"
-      />
-      <h2 className="text-2xl font-bold capitalize text-gray-800">
-        {selectedPokemon.name}
-      </h2>
-    </div>
-    <div className="grid grid-cols-2 gap-6 mb-6">
-      <div>
-        <p className="font-bold text-gray-700 mb-1">Type</p>
-        <p className="text-gray-600">{selectedPokemon.type}</p>
-      </div>
-      <div>
-        <p className="font-bold text-gray-700 mb-1">Height</p>
-        <p className="text-gray-600">{selectedPokemon.height / 10} m</p>
-      </div>
-      <div>
-        <p className="font-bold text-gray-700 mb-1">Weight</p>
-        <p className="text-gray-600">{selectedPokemon.weight / 10} kg</p>
-      </div>
-      <div>
-        <p className="font-bold text-gray-700 mb-1">Abilities</p>
-        <p className="text-gray-600">{selectedPokemon.abilities.join(', ')}</p>
-      </div>
-      {selectedPokemon.region && (
-        <div>
-          <p className="font-bold text-gray-700 mb-1">Region</p>
-          <p className="text-gray-600 capitalize">{selectedPokemon.region}</p>
-        </div>
-      )}
-    </div>
-    {selectedPokemon.flavorText && (
-      <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-        <p className="font-bold text-gray-700 mb-1">Description</p>
-        <p className="text-gray-600">{selectedPokemon.flavorText}</p>
-      </div>
-    )}
-    <div className="mb-6">
-      <p className="font-bold text-gray-700 mb-2">Special Status</p>
-      <div className="space-y-2">
-        {selectedPokemon.isLegendary && <p className="text-gray-600">Legendary Pokémon</p>}
-        {selectedPokemon.isMythical && <p className="text-gray-600">Mythical Pokémon</p>}
-        {selectedPokemon.isBaby && <p className="text-gray-600">Baby Pokémon</p>}
-        {!selectedPokemon.isLegendary && !selectedPokemon.isMythical && !selectedPokemon.isBaby && (
-          <p className="text-gray-600">Regular Pokémon</p>
-        )}
-      </div>
-    </div>
-    <div className="mb-6">
-      <p className="font-bold text-gray-700 mb-2">Stats</p>
-      <div className="grid grid-cols-2 gap-4">
-        {selectedPokemon.stats.map((stat) => (
-          <div key={stat.name} className="flex justify-between items-center p-2 bg-gray-100 rounded-md">
-            <span className="capitalize text-gray-700">{stat.name}</span>
-            <span className="text-gray-800 font-medium">{stat.value}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-    <div className="mb-6">
-      <p className="font-bold text-gray-700 mb-2">Evolution Chain</p>
-      <div className="flex space-x-4">
-        {selectedPokemon.evolutionChain.map((evolution) => (
-          <div
-            key={evolution.name}
-            className="flex flex-col items-center cursor-pointer hover:opacity-75"
-            onClick={() => handlePokemonClick(evolution.name)}
-          >
-            <img
-              src={evolution.image}
-              alt={evolution.name}
-              className="w-16 h-16 object-contain rounded-full"
+  <div className="min-h-screen p-4 bg-gray-50">
+    <Card className="w-full max-w-4xl mx-auto">
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold">Pokédex</CardTitle>
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="relative flex-1">
+            <Input
+              placeholder="Search Pokémon..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
             />
-            <p className="capitalize text-gray-600 mt-2">{evolution.name}</p>
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
           </div>
-        ))}
-      </div>
-    </div>
-    <Button
-      onClick={() => setSelectedPokemon(null)}
-      className="w-full bg-black text-white hover:bg-gray-800 py-3 rounded-md transition-colors mt-6"
-    >
-      Back to List
-    </Button>
-  </Card>
-)}
-  {isLoading || isFiltering ? (
-      <div className="flex justify-center items-center h-32">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    ) : (
-      <div className="space-y-4">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {error ? (
-            <div className="col-span-full text-center text-gray-500">
-              {error}
-            </div>
-          ) : filteredPokemon.length > 0 ? (
-            filteredPokemon.map((pokemon) => (
-              <Card
-                key={pokemon.id}
-                className="cursor-pointer hover:bg-gray-50"
-                onClick={() => handlePokemonClick(pokemon.name)}
-              >
-                <CardContent className="flex flex-col items-center p-4">
-                  <img
-                    src={pokemon.image}
-                    alt={pokemon.name}
-                    className="w-24 h-24"
-                  />
-                  <p className="text-lg font-semibold capitalize mt-2">
-                    {pokemon.name}
-                  </p>
-                </CardContent>
-              </Card>
-            ))
-          ) : (
-            <div className="col-span-full text-center text-gray-500">
-              No Pokémon found.
-            </div>
-          )}
-        </div>
-        {filteredPokemon.length > 0 && (
-          <Button
-            onClick={fetchMorePokemon}
-            className="w-full"
-            disabled={isLoadingMore}
-          >
-            {isLoadingMore ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Load More'}
+          <Button onClick={handleSearch} className="w-[100px]">
+            Search
           </Button>
+          <Select value={selectedType} onValueChange={handleTypeFilter}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Filter by type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="normal">Normal</SelectItem>
+              <SelectItem value="fire">Fire</SelectItem>
+              <SelectItem value="water">Water</SelectItem>
+              <SelectItem value="grass">Grass</SelectItem>
+              <SelectItem value="electric">Electric</SelectItem>
+              <SelectItem value="ice">Ice</SelectItem>
+              <SelectItem value="fighting">Fighting</SelectItem>
+              <SelectItem value="poison">Poison</SelectItem>
+              <SelectItem value="ground">Ground</SelectItem>
+              <SelectItem value="flying">Flying</SelectItem>
+              <SelectItem value="psychic">Psychic</SelectItem>
+              <SelectItem value="bug">Bug</SelectItem>
+              <SelectItem value="rock">Rock</SelectItem>
+              <SelectItem value="ghost">Ghost</SelectItem>
+              <SelectItem value="dragon">Dragon</SelectItem>
+              <SelectItem value="dark">Dark</SelectItem>
+              <SelectItem value="steel">Steel</SelectItem>
+              <SelectItem value="fairy">Fairy</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </CardHeader>
+      <CardContent>
+        {selectedPokemon ? (
+          <Card className="w-full max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
+            <div className="flex items-center justify-center space-x-4 mb-6">
+              <img
+                src={selectedPokemon.image}
+                alt={selectedPokemon.name}
+                className="w-24 h-24 object-contain"
+              />
+              <h2 className="text-2xl font-bold capitalize text-gray-800">
+                {selectedPokemon.name}
+              </h2>
+            </div>
+            <div className="grid grid-cols-2 gap-6 mb-6">
+              <div>
+                <p className="font-bold text-gray-700 mb-1">Type</p>
+                <p className="text-gray-600">{selectedPokemon.type}</p>
+              </div>
+              <div>
+                <p className="font-bold text-gray-700 mb-1">Height</p>
+                <p className="text-gray-600">{selectedPokemon.height / 10} m</p>
+              </div>
+              <div>
+                <p className="font-bold text-gray-700 mb-1">Weight</p>
+                <p className="text-gray-600">{selectedPokemon.weight / 10} kg</p>
+              </div>
+              <div>
+                <p className="font-bold text-gray-700 mb-1">Abilities</p>
+                <p className="text-gray-600">{selectedPokemon.abilities.join(', ')}</p>
+              </div>
+              {selectedPokemon.region && (
+                <div>
+                  <p className="font-bold text-gray-700 mb-1">Region</p>
+                  <p className="text-gray-600 capitalize">{selectedPokemon.region}</p>
+                </div>
+              )}
+            </div>
+            {selectedPokemon.flavorText && (
+              <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <p className="font-bold text-gray-700 mb-1">Description</p>
+                <p className="text-gray-600">{selectedPokemon.flavorText}</p>
+              </div>
+            )}
+            <div className="mb-6">
+              <p className="font-bold text-gray-700 mb-2">Special Status</p>
+              <div className="space-y-2">
+                {selectedPokemon.isLegendary && <p className="text-gray-600">Legendary Pokémon</p>}
+                {selectedPokemon.isMythical && <p className="text-gray-600">Mythical Pokémon</p>}
+                {selectedPokemon.isBaby && <p className="text-gray-600">Baby Pokémon</p>}
+                {!selectedPokemon.isLegendary && !selectedPokemon.isMythical && !selectedPokemon.isBaby && (
+                  <p className="text-gray-600">Regular Pokémon</p>
+                )}
+              </div>
+            </div>
+            <div className="mb-6">
+              <p className="font-bold text-gray-700 mb-2">Stats</p>
+              <div className="grid grid-cols-2 gap-4">
+                {selectedPokemon.stats.map((stat) => (
+                  <div key={stat.name} className="flex justify-between items-center p-2 bg-gray-100 rounded-md">
+                    <span className="capitalize text-gray-700">{stat.name}</span>
+                    <span className="text-gray-800 font-medium">{stat.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="mb-6">
+              <p className="font-bold text-gray-700 mb-2">Evolution Chain</p>
+              <div className="flex space-x-4">
+                {selectedPokemon.evolutionChain.map((evolution) => (
+                  <div
+                    key={evolution.name}
+                    className="flex flex-col items-center cursor-pointer hover:opacity-75"
+                    onClick={() => handlePokemonClick(evolution.name)}
+                  >
+                    <img
+                      src={evolution.image}
+                      alt={evolution.name}
+                      className="w-16 h-16 object-contain rounded-full"
+                    />
+                    <p className="capitalize text-gray-600 mt-2">{evolution.name}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <Button
+              onClick={() => setSelectedPokemon(null)}
+              className="w-full bg-black text-white hover:bg-gray-800 py-3 rounded-md transition-colors mt-6"
+            >
+              Back to List
+            </Button>
+          </Card>
+        ) : (
+          <>
+            {isLoading || isFiltering ? (
+              <div className="flex justify-center items-center h-32">
+                <Loader2 className="h-8 w-8 animate-spin" />
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {error ? (
+                    <div className="col-span-full text-center text-gray-500">
+                      {error}
+                    </div>
+                  ) : filteredPokemon.length > 0 ? (
+                    filteredPokemon.map((pokemon) => (
+                      <Card
+                        key={pokemon.id}
+                        className="cursor-pointer hover:bg-gray-100 border border-gray-200 rounded-lg shadow-sm"
+                        onClick={() => handlePokemonClick(pokemon.name)}
+                      >
+                        <CardContent className="flex flex-col items-center p-4">
+                          <img
+                            src={pokemon.image}
+                            alt={pokemon.name}
+                            className="w-24 h-24 object-contain"
+                          />
+                          <p className="text-lg font-semibold capitalize mt-2 text-gray-800 text-center">
+                            {pokemon.name}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    ))
+                  ) : (
+                    <div className="col-span-full text-center text-gray-500">
+                      No Pokémon found.
+                    </div>
+                  )}
+                </div>
+                {filteredPokemon.length > 0 && (
+                  <Button
+                    onClick={fetchMorePokemon}
+                    className="w-full bg-black text-white hover:bg-gray-800 py-3 rounded-md transition-colors"
+                    disabled={isLoadingMore}
+                  >
+                    {isLoadingMore ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Load More'}
+                  </Button>
+                )}
+              </div>
+            )}
+          </>
         )}
-      </div>
-    )}
-        </CardContent>
-      </Card>
-    </div>
-  )
-}
+      </CardContent>
+    </Card>
+  </div>
+);
