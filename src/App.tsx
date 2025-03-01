@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Search, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -347,7 +346,7 @@ export default function Pokedex() {
             />
             <p className="capitalize text-gray-600 mt-2">{evolution.name}</p>
           </div>
-        )}
+        ))}
       </div>
     </div>
     <Button
@@ -358,99 +357,7 @@ export default function Pokedex() {
     </Button>
   </Card>
 )}
-  {selectedPokemon ? (
-  <Card className="w-full max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
-    <div className="flex items-center justify-center space-x-4 mb-6">
-      <img
-        src={selectedPokemon.image}
-        alt={selectedPokemon.name}
-        className="w-24 h-24 object-contain"
-      />
-      <h2 className="text-2xl font-bold capitalize text-gray-800">
-        {selectedPokemon.name}
-      </h2>
-    </div>
-    <div className="grid grid-cols-2 gap-6 mb-6">
-      <div>
-        <p className="font-bold text-gray-700 mb-1">Type</p>
-        <p className="text-gray-600">{selectedPokemon.type}</p>
-      </div>
-      <div>
-        <p className="font-bold text-gray-700 mb-1">Height</p>
-        <p className="text-gray-600">{selectedPokemon.height / 10} m</p>
-      </div>
-      <div>
-        <p className="font-bold text-gray-700 mb-1">Weight</p>
-        <p className="text-gray-600">{selectedPokemon.weight / 10} kg</p>
-      </div>
-      <div>
-        <p className="font-bold text-gray-700 mb-1">Abilities</p>
-        <p className="text-gray-600">{selectedPokemon.abilities.join(', ')}</p>
-      </div>
-      {selectedPokemon.region && (
-        <div>
-          <p className="font-bold text-gray-700 mb-1">Region</p>
-          <p className="text-gray-600 capitalize">{selectedPokemon.region}</p>
-        </div>
-      )}
-    </div>
-    {selectedPokemon.flavorText && (
-      <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-        <p className="font-bold text-gray-700 mb-1">Description</p>
-        <p className="text-gray-600">{selectedPokemon.flavorText}</p>
-      </div>
-    )}
-    <div className="mb-6">
-      <p className="font-bold text-gray-700 mb-2">Special Status</p>
-      <div className="space-y-2">
-        {selectedPokemon.isLegendary && <p className="text-gray-600">Legendary Pokémon</p>}
-        {selectedPokemon.isMythical && <p className="text-gray-600">Mythical Pokémon</p>}
-        {selectedPokemon.isBaby && <p className="text-gray-600">Baby Pokémon</p>}
-        {!selectedPokemon.isLegendary && !selectedPokemon.isMythical && !selectedPokemon.isBaby && (
-          <p className="text-gray-600">Regular Pokémon</p>
-        )}
-      </div>
-    </div>
-    <div className="mb-6">
-      <p className="font-bold text-gray-700 mb-2">Stats</p>
-      <div className="grid grid-cols-2 gap-4">
-        {selectedPokemon.stats.map((stat) => (
-          <div key={stat.name} className="flex justify-between items-center p-2 bg-gray-100 rounded-md">
-            <span className="capitalize text-gray-700">{stat.name}</span>
-            <span className="text-gray-800 font-medium">{stat.value}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-    <div className="mb-6">
-      <p className="font-bold text-gray-700 mb-2">Evolution Chain</p>
-      <div className="flex space-x-4">
-        {selectedPokemon.evolutionChain.map((evolution) => (
-          <div
-            key={evolution.name}
-            className="flex flex-col items-center cursor-pointer hover:opacity-75"
-            onClick={() => handlePokemonClick(evolution.name)}
-          >
-            <img
-              src={evolution.image}
-              alt={evolution.name}
-              className="w-16 h-16 object-contain rounded-full"
-            />
-            <p className="capitalize text-gray-600 mt-2">{evolution.name}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-    <Button
-      onClick={() => setSelectedPokemon(null)}
-      className="w-full bg-black text-white hover:bg-gray-800 py-3 rounded-md transition-colors mt-6"
-    >
-      Back to List
-    </Button>
-  </Card>
-) : (
-  <>
-    {isLoading || isFiltering ? (
+  {isLoading || isFiltering ? (
       <div className="flex justify-center items-center h-32">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
@@ -497,8 +404,6 @@ export default function Pokedex() {
         )}
       </div>
     )}
-  </>
-)}
         </CardContent>
       </Card>
     </div>
