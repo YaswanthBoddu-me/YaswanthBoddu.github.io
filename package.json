@@ -1,7 +1,7 @@
 {
   "name": "pokedex",
   "version": "1.0.0",
-  "homepage": "https://YashwanthBoddu-me.github.io/pokedex",
+  "homepage": "https://YaswanthBoddu-me.github.io/pokedex",
     "scripts": {
     "dev": "vite",
     "build": "vite build",
