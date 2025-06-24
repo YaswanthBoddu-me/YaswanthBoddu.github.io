@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,34 +25,13 @@ type Pokemon = {
   isBaby: boolean; // Property for baby status
 };
 
-const mockPokemonData: Pokemon[] = [
-  {
-    id: 1,
-    name: 'Bulbasaur',
-    image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png',
-    type: 'Grass/Poison',
-    height: 7,
-    weight: 69,
-    abilities: ['Overgrow', 'Chlorophyll'],
-    stats: [
-      { name: 'HP', value: 45 },
-      { name: 'Attack', value: 49 },
-      { name: 'Defense', value: 49 },
-      { name: 'Special Attack', value: 65 },
-      { name: 'Special Defense', value: 65 },
-      { name: 'Speed', value: 45 }
-    ],
-    evolutionChain: []
-  }
-]
-
 export default function Pokedex() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const [pokemonList, setPokemonList] = useState<Pokemon[]>(mockPokemonData)
+  const [pokemonList, setPokemonList] = useState<Pokemon[]>([])
   const [error, setError] = useState<string | null>(null)
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(0) // Start page at 0 as fetchMorePokemon increments it
   const [selectedType, setSelectedType] = useState<string>('all')
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [isFiltering, setIsFiltering] = useState(false)
@@ -192,6 +171,14 @@ export default function Pokedex() {
       setIsLoadingMore(false)
     }
   }
+
+  useEffect(() => {
+    // Fetch initial Pokémon on mount
+    if (page === 0) { // Only fetch if no pages have been loaded yet
+      setIsLoading(true); // Set main loading true for initial fetch
+      fetchMorePokemon().finally(() => setIsLoading(false)); // Ensure main loading is false after initial fetch
+    }
+  }, []); // Empty dependency array ensures this runs only once on mount
 
   const handleTypeFilter = (type: string) => {
     setIsFiltering(true)

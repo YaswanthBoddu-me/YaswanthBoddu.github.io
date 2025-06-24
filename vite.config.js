@@ -1,9 +1,12 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig({
-  plugins: [react()],
-  resolve: {
+export default defineConfig(({ command }) => {
+  const base = command === 'build' ? '/pokedex/' : '/';
+  return {
+    base: base,
+    plugins: [react()],
+    resolve: {
     alias: {
       '@': '/src',
     },
@@ -14,4 +17,5 @@ export default defineConfig({
       'localhost',
     ],
   },
+  };
 });
